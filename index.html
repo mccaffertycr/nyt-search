@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <title>NYT Search</title>
+</head>
+<body>
+        <div style="background-color: teal ; height: 200px; widows: 960px; margin: 0 auto;" class="jumbotron">
+                <div style class="container">
+                  <h1 style="text-align: center ; color: white" class="display-4">NEW YORK TIMES SEARCH</h1>
+                  
+                </div>
+              </div>
+              <br>
+              <div style=" width: 960px; margin: 0 auto; border: 1px solid black ; padding: 15px;">
+              
+              <form>
+                  
+                    <div  class="form-group ;">
+                    <header style="text-align: center">
+                        <h1>Search Parameters </h1>  </header>
+                      <label for="exampleFormControlInput1" style="font-weight: bolder">Search</label>
+                      <input id="q_val" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Search for articles">
+                    </div>
+                    <div  class="form-group">
+                      <header style="text-align: center">
+                         </header>
+                        <label for="exampleFormControlInput1" style="font-weight: bolder">API Key</label>
+                        <input id="api_val" type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Api Key">
+                      </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlSelect1">Example select</label>
+                      <select id="page_val" class="form-control" id="exampleFormControlSelect1">
+                        <option>1</option>
+                        <option>5</option>
+                        <option>10</option>
+                    </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlTextarea1">Start year (optional)</label>
+                      <textarea id="bg_date" class="form-control" id="exampleFormControlTextarea1" rows="1"placeholder="YYYYMMDD"></textarea>
+                    </div>
+                    <div class="form-group">
+                            <label for="exampleFormControlTextarea1">End year (optional)</label>
+                            <textarea id="end_date" class="form-control" id="exampleFormControlTextarea1" rows="1" placeholder="YYYYMMDD"></textarea>
+                          </div>
+                    <div>
+                        <button id="submit" class="SEARCH">SEARCH</button>
+                        <button id="clear" class="SEARCH">Clear SEARCH</button>
+                    </div>
+                  </form> 
+                  
+                  </div>
+                  <div style=" width: 960px; margin: 0 auto; border: 1px solid black ; padding: 15px;">
+              
+                <div class="row">
+                        
+                <div id="articles"></div>
+
+
+                </div>
+        
+            <script type="text/javascript">
+                var returned_docs = []
+                var q_val;
+                var hl_val;
+                var api_val;
+                var page_val
+
+                $('#clear').click(function() {
+                    $('#q').empty();
+                    $('#hl').empty();
+                    $('#bg_date').empty();
+                    $('end_date').empty();
+                    $('#api_val').empty();
+                    $('#page_val').empty();
+                })
+
+                $('#submit').click(function(e){
+                    e.preventDefault()
+                    $('#articles').empty()
+                    $('#articles').append("<h1 style='text-align: center'>Articles<h1>")
+                    q_val = $('#q').val()
+                    hl_val = $('#hl').find(":selected").val();
+                    bg_date = $('#bg_date').val();
+                    end_date = $('#end_date').val();
+                    api_val = $('#api_val').val()
+                    page_val = $('#page').val()
+
+                
+                var query_data = {"q": q_val, "hl": hl_val, "page": page_val, "api-key": api_val }
+                var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    data: query_data,
+                    crossDomain: true,
+                    dataType: "json"
+                }).done(function(result) {
+                    result.response.docs.forEach(function(element){
+                        console.log(element)
+                        $('#articles').append(`<div class='card' style=' text-align: center' width: 18rem;'><div class='card-body'><h5 class='card-title'> ${element.headline.main}</h5><p class='card-text'></p><a href='${element.web_url}' class='btn btn-primary'>Article</a></div></div>`)
+                    })
+                }).fail(function(err) {
+                    throw err;
+                });
+            })
+
+            </script>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    </body>
+</html>
